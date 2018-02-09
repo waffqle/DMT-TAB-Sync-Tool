@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using NLog;
-using TABSync.Files;
+using TABSync.Imports;
 using TABSync.Properties;
 
 namespace TABSync {
@@ -12,48 +10,33 @@ namespace TABSync {
 
         private static void Main(string[] args) {
             /*
-             * Collect those tab files and convert to CSV.
-             * DMT likes CSV files.
+             * Convert the tab files into proper DMT templates.
              */
-            foreach (var fileType in Enum.GetValues(typeof(FileType)).Cast<FileType>())
-                ConvertTabToCsv(fileType);
+            foreach (var tabFile in Directory.GetFiles(Settings.Default.TABPath))
+                RouteFile(tabFile);
+
+            /*
+             * Feed the converted templates to DMT
+             */
         }
 
-        private static void ConvertTabToCsv(FileType fileType) {
-            var tabPaths  = GetFiles(Settings.Default.TABPath, GetFileRetrievalFilter(fileType));
-            var tabFiles1 = tabPaths.Select(tp => new OrderHead(tp)).ToList();
+        private static void RouteFile(string tabFile) {
+            logger.Info($"Processing: {Path.GetFileName(tabFile)}");
 
-            logger.Info($"Found {tabFiles1.Count} files.");
-
-            var tabFiles = tabFiles1;
-            foreach (var tf in tabFiles)
-                tf.ConvertToCSV(Path.Combine(Settings.Default.CSVPath, GetDestinationFolder(fileType)));
-        }
-
-        private static IEnumerable<string> GetFiles(string path, string filter) {
-            var files = Directory.EnumerateFiles(path, filter);
-            return files;
-        }
-
-        private static string GetFileRetrievalFilter(FileType fileType) {
+            var fileType = TabHelper.GetFileType(tabFile);
             switch (fileType) {
-                case FileType.OrderHead: return "orders*.tab";
-                case FileType.OrderLine: return "lines*.tab";
-                default:                 throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
+                case TabHelper.DataType.OrderHead: {
+                    var orderHead = new OrderHead(tabFile);
+                    orderHead.ExportDMTFile(Settings.Default.CSVPath);
+                    break;
+                }
+                case TabHelper.DataType.OrderLine: {
+                    var orderLine = new OrderLine(tabFile);
+                    orderLine.ExportDMTFile(Settings.Default.CSVPath);
+                    break;
+                }
+                default: throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private static string GetDestinationFolder(FileType fileType) {
-            switch (fileType) {
-                case FileType.OrderHead: return "OrderHeads";
-                case FileType.OrderLine: return "OrderLines";
-                default:                 throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
-            }
-        }
-
-        private enum FileType {
-            OrderHead,
-            OrderLine
         }
     }
 }

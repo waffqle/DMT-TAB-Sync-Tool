@@ -8,5 +8,14 @@
     <Setting Name="CSVPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">C:\Temp\Abbott\CSVs</Value>
     </Setting>
+    <Setting Name="OrderHeadPrefix" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">orders</Value>
+    </Setting>
+    <Setting Name="OrderLinePrefix" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">lines</Value>
+    </Setting>
+    <Setting Name="DMTPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">c:\Temp\Abbott\DMT</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

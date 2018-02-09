@@ -40,5 +40,32 @@ namespace TABSync.Properties {
                 return ((string)(this["CSVPath"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("orders")]
+        public string OrderHeadPrefix {
+            get {
+                return ((string)(this["OrderHeadPrefix"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("lines")]
+        public string OrderLinePrefix {
+            get {
+                return ((string)(this["OrderLinePrefix"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\Temp\\Abbott\\DMT")]
+        public string DMTPath {
+            get {
+                return ((string)(this["DMTPath"]));
+            }
+        }
     }
 }
